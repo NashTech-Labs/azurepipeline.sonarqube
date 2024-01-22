@@ -1,4 +1,4 @@
-# ADO Pipeline Template for Docker Build
+# ADO Pipeline Template for Maven related sonarqube analysis
 
 This template contains an Azure pipeline that can be extended to use sonarqube task to have static ci testng of maven source code under different Azure pipelines.
 
