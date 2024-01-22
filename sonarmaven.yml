@@ -1,0 +1,26 @@
+name: 'Maven SonarQube Testing $(Date:yyyyMMdd).$(Rev:r)'       
+
+steps:
+
+
+- task: SonarQubePrepare@5
+  inputs:
+    SonarQube: ${{ parameters.SonarQube }}
+    scannerMode: 'Other'
+    extraProperties: ${{ parameter.extraProperties }}
+
+- task: Maven@4
+  name: SonarQubeAnalyseMaven
+  inputs:
+    mavenPomFile: ${{ parameters.mavenPomFile }}
+    publishJUnitResults: false
+    javaHomeOption: 'JDKVersion'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: true
+    sqMavenPluginVersionChoice: 'latest'
+
+- task: SonarQubeAnalyze@5 # Analyse step is not used for maven but publish step is dependent on this step
+
+- task: SonarQubePublish@5
