@@ -1,0 +1,92 @@
+name: 'Maven SonarQube Testing $(Date:yyyyMMdd).$(Rev:r)'
+
+resources:
+  repositories:
+    - repository: sonar
+      type: github
+      name: duck-creek/ADO.Pipelines.Templates
+      ref: feature/sonarqube-maven
+      endpoint: 'Duck Creek'
+
+steps:
+
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean test'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    testRunTitle: 'TestRUNtitle'
+    codeCoverageToolOption: 'JaCoCo'
+    codeCoverageClassFilesDirectories: 'target/classes,target/test-classes'
+    codeCoverageSourceDirectories: 'src/main,src/test'
+    javaHomeOption: 'JDKVersion'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+
+# - task: SonarQubePrepare@5
+#   inputs:
+#     SonarQube: 'DuckCreekSonarQubeConnection'
+#     scannerMode: 'Other'
+#     extraProperties: |
+#       # Project identification
+#       sonar.projectKey=duck-creek_Example_AYmZC4QfQS0Ebj7IMMdk
+#       sonar.projectName=Example
+#       sonar.projectVersion=2.0
+
+#       # Source code directories
+#       sonar.sources=src/main/java
+
+#       # Test directories
+#       sonar.tests=src/test/java
+
+#       # Language
+#       sonar.language=java
+
+#       # Encoding
+#       sonar.sourceEncoding=UTF-8
+
+#       # Additional properties
+#       sonar.java.binaries=target/classes
+#       # sonar.java.libraries=target/lib/**/*.jar
+#       sonar.java.test.binaries=target/test-classes
+#       # sonar.java.test.libraries=target/lib/**/*.jar
+#       sonar.exclusions=**/*.class
+#       sonar.junit.reportPaths=**/surefire-reports
+#       sonar.coverage.jacoco.xmlReportPaths=**/surefire-reports/TEST-*.xml
+
+
+- template: frameWork/scan/sonar/main.yml@sonar
+  parameters:
+    sourceLanguage: 'maven'
+    sonarqubeServiceConnection: 'DuckCreekSonarQubeConnection'
+    publishResults: true
+    sonarProperties:
+      properties: |
+        # Project identification
+        sonar.projectKey=duck-creek_Example_AYmZC4QfQS0Ebj7IMMdk
+        sonar.projectName=Example
+        sonar.projectVersion=2.0
+  
+        # Source code directories
+        sonar.sources=src/main/java
+  
+        # Test directories
+        sonar.tests=src/test/java
+  
+        # Language
+        sonar.language=java
+  
+        # Encoding
+        sonar.sourceEncoding=UTF-8
+  
+        # Additional properties
+        sonar.java.binaries=target/classes
+        # sonar.java.libraries=target/lib/**/*.jar
+        sonar.java.test.binaries=target/test-classes
+        # sonar.java.test.libraries=target/lib/**/*.jar
+        sonar.exclusions=**/*.class
+        sonar.junit.reportPaths=**/surefire-reports
+        sonar.coverage.jacoco.xmlReportPaths=**/surefire-reports/TEST-*.xml
